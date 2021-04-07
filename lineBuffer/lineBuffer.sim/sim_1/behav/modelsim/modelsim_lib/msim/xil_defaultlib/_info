@@ -1,0 +1,90 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/Vivado/Vivado_Projects/Verilog Projects/lineBuffer/lineBuffer/lineBuffer.sim/sim_1/behav/modelsim
+T_opt
+!s110 1617735970
+VJP3XkkTSl<Lge2zRlLMnR2
+04 13 4 work linebuffer_tb fast 0
+04 4 4 work glbl fast 0
+=1-b42e99c2cd9a-606cb122-2d-4fa4
+o-quiet -auto_acc_if_foreign -work xil_defaultlib -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip +acc
+Z1 tCvgOpt 0
+n@_opt
+OL;O;10.7;67
+vglbl
+!s110 1617735961
+!i10b 1
+!s100 7cd<?T0KPANS9PBoRj:BY2
+INdU5f[;Bb^Y=SUnL>A9=o3
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1573089660
+8glbl.v
+Fglbl.v
+L0 6
+Z3 OL;L;10.7;67
+r1
+!s85 0
+31
+!s108 1617735961.000000
+!s107 glbl.v|
+!s90 -work|xil_defaultlib|glbl.v|
+!i113 0
+Z4 o-work xil_defaultlib -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1
+vlineBuffer
+!s10a 1617735926
+!s110 1617735955
+!i10b 1
+!s100 gnb<PcBN;ndoGV6[_2Z:01
+IFSR0]2I:>DfVkO:nCK@283
+R2
+R0
+w1617735926
+8../../../../src/lineBuffer.v
+F../../../../src/lineBuffer.v
+F../../../../src/params.vh
+Z5 L0 15
+R3
+r1
+!s85 0
+31
+!s108 1617735955.000000
+Z6 !s107 ../../../../src/../src/params.vh|../../../../src/params.vh|../../../../sim/linebuffer_tb.v|../../../../src/lineBuffer.v|
+!s90 -reportprogress|300|-64|-incr|-work|xil_defaultlib|+incdir+../../../../src|../../../../src/lineBuffer.v|../../../../sim/linebuffer_tb.v|
+!i113 0
+R4
+Z7 !s92 -work xil_defaultlib +incdir+../../../../src -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1
+nline@buffer
+vlinebuffer_tb
+!s10a 1617728276
+!s110 1617728292
+!i10b 1
+!s100 3hnz<BQWH2nWAI`Y9M5T13
+I5aBOU=OgSGiAjg30zYn9^1
+R2
+R0
+w1617728276
+8../../../../sim/linebuffer_tb.v
+F../../../../sim/linebuffer_tb.v
+F../../../../src/../src/params.vh
+R5
+R3
+r1
+!s85 0
+31
+!s108 1617728292.000000
+R6
+!s90 -64|-incr|-work|xil_defaultlib|+incdir+../../../../src|../../../../src/lineBuffer.v|../../../../sim/linebuffer_tb.v|
+!i113 0
+R4
+R7
+R1

@@ -2,6 +2,7 @@
 // Parameters 
 /////////////////////////////////////////////////////////////////////////////////////
 parameter FIXED_POINT_SIZE                                              = 16;
+parameter DATA_WIDTH                                                    = 8;
 parameter FIXED_POINT_FRACTION_SIZE                                     = 8;
 parameter KERNEL_SIZE                                                   = 5;
 parameter IMAGE_WIDTH                                                   = 32;

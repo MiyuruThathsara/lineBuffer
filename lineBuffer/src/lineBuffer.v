@@ -22,14 +22,6 @@ module lineBuffer(
     );
     `include "params.vh"
 /////////////////////////////////////////////////////////////////////////////////
-// Parameters
-/////////////////////////////////////////////////////////////////////////////////
-parameter FIXED_POINT_SIZE                                              = 16;
-parameter FIXED_POINT_FRACTION_SIZE                                     = 8;
-parameter KERNEL_SIZE                                                   = 5;
-parameter IMAGE_WIDTH                                                   = 32;
-parameter IMAGE_HEIGHT                                                  = 32;
-/////////////////////////////////////////////////////////////////////////////////
 // Local Parameters
 /////////////////////////////////////////////////////////////////////////////////
 localparam DATA_OUT_SIZE                                                = KERNEL_SIZE * KERNEL_SIZE * FIXED_POINT_SIZE;
@@ -62,9 +54,9 @@ reg                                                                     pixel_fi
 reg                                                                     data_out_flag_1;
 reg                                                                     data_out_flag_2;
 wire                                                                    reset_wire;
-unsigned integer                                                        i1;
-unsigned integer                                                        i2;
-unsigned integer                                                        i3;
+integer                                                                 i1;
+integer                                                                 i2;
+integer                                                                 i3;
 /////////////////////////////////////////////////////////////////////////////////
 // Implementation
 /////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +70,6 @@ end
 
 always@(posedge clk or negedge reset_wire)begin
     if(~reset_wire)begin
-        line_buffer                                                             <= { KERNEL_SIZE { LINE_BUFFER_WIDTH { 1'b0 } } };
         column_counter                                                          <= { COLUMN_COUNTER_WIDTH { 1'b0 } };
         row_counter                                                             <= { ROW_COUNTER_WIDTH { 1'b0 } };
         pixel_counter                                                           <= { IMAGE_SIZE { 1'b0 } };
@@ -93,10 +84,12 @@ always@(posedge clk or negedge reset_wire)begin
                         line_buffer[ i1 ][ FIXED_POINT_SIZE - 1 : 0 ]           <= line_buffer[ i1 - 1 ][ LINE_BUFFER_WIDTH - 1 : LINE_BUFFER_LAST_DATA_BEGIN ];
                     end
                 end
+                column_counter                                                  <= column_counter + 1'b1;
             end
             else begin
-                line_buffer                                                     <= { KERNEL_SIZE { LINE_BUFFER_WIDTH { 1'b0 } } };
                 pixel_finish_flag                                               <= 1'b0;
+                row_counter                                                     <= { ROW_COUNTER_WIDTH { 1'b0 } };
+                column_counter                                                  <= { COLUMN_COUNTER_WIDTH { 1'b0 } };
             end
         end
         else begin
@@ -105,6 +98,9 @@ always@(posedge clk or negedge reset_wire)begin
                     line_buffer[ i2 ]                                           <= line_buffer[ i2 ] << FIXED_POINT_SIZE;
                     if(i2 != 0)begin
                         line_buffer[ i2 ][ FIXED_POINT_SIZE - 1 : 0 ]           <= line_buffer[ i2 - 1 ][ LINE_BUFFER_WIDTH - 1 : LINE_BUFFER_LAST_DATA_BEGIN ];
+                    end
+                    else begin
+                        line_buffer[ i2 ][ FIXED_POINT_SIZE - 1 : 0 ]           <= dataIn;
                     end
                 end
                 if( column_counter < IMAGE_WIDTH - 1'b1 )begin
@@ -117,8 +113,21 @@ always@(posedge clk or negedge reset_wire)begin
                     end
                     else begin
                         row_counter                                             <= { ROW_COUNTER_WIDTH { 1'b0 } };
-                        pixel_finish_flag                                       <= 1'b1;
                     end
+                end
+            end
+            else begin
+                if( column_counter >= IMAGE_WIDTH - 1'b1 )begin
+                    if( row_counter >= IMAGE_HEIGHT - 1'b1 )begin
+                        pixel_finish_flag                                       <= 1'b1;
+                        column_counter                                          <= { COLUMN_COUNTER_WIDTH { 1'b0 } };
+                    end
+                    else begin
+                        pixel_finish_flag                                       <= 1'b0;
+                    end
+                end
+                else begin
+                    pixel_finish_flag                                           <= 1'b0;
                 end
             end
         end
@@ -128,27 +137,30 @@ end
 always@(posedge clk or negedge reset_wire)begin
     if(~reset_wire)begin
         data_out_flag_1                                                         <= 1'b0;
-        data_out_flag_2                                                         <= 1'b0;
     end
     else begin
-        if(data_out_flag_1)begin
-            if( column_counter < IMAGE_WIDTH - KERNEL_SIZE )begin
-                data_out_flag_2                                                 <= 1'b1;
-            end
-            else begin
-                data_out_flag_2                                                 <= 1'b0;
-            end
+        if( row_counter >= KERNEL_SIZE )begin
+            data_out_flag_1                                                     <= 1'b1;
         end
         else begin
-            if( row_counter >= KERNEL_SIZE )begin
-                data_out_flag_1                                                 <= 1'b1;
-            end
-            else begin
-                data_out_flag_1                                                 <= 1'b0;
-            end
+            data_out_flag_1                                                     <= 1'b0;
         end
     end
 end 
+
+always@(posedge clk or negedge reset_wire)begin
+    if(~reset_wire)begin
+        data_out_flag_2                                                         <= 1'b0;        
+    end
+    else begin
+        if( column_counter < IMAGE_WIDTH - KERNEL_SIZE + 1'b1 )begin
+            data_out_flag_2                                                     <= 1'b1;
+        end
+        else begin
+            data_out_flag_2                                                     <= 1'b0;
+        end
+    end
+end
 
 always@(posedge clk or negedge reset_wire)begin
     if(~reset_wire)begin
@@ -159,7 +171,7 @@ always@(posedge clk or negedge reset_wire)begin
         if( data_out_flag_1 & data_out_flag_2 )begin
             dataValidOut                                                        <= 1'b1;
             for( i3 = 0; i3 < KERNEL_SIZE; i3 = i3 + 1'b1 )begin
-                dataOut[ ( i3 + 1'b1 ) * KERNEL_ROW_SIZE - 1 : i3 * KERNEL_ROW_SIZE ]   <= line_buffer[ i3 ][ KERNEL_ROW_SIZE - 1 : 0 ];
+                dataOut[ i3 * KERNEL_ROW_SIZE +: KERNEL_ROW_SIZE ]              <= line_buffer[ i3 ][ KERNEL_ROW_SIZE - 1 : 0 ];
             end
         end
         else begin

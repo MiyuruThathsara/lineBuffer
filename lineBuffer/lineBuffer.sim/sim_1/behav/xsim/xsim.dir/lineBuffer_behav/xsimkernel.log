@@ -1,0 +1,4 @@
+Running: xsim.dir/lineBuffer_behav/xsimk.exe -simmode gui -wdb lineBuffer_behav.wdb -simrunnum 0 -socket 58355
+Design successfully loaded
+Design Loading Memory Usage: 5980 KB (Peak: 5980 KB)
+Design Loading CPU Usage: 0 ms
